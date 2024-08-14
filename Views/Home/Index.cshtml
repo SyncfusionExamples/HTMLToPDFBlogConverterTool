@@ -1,0 +1,27 @@
+﻿@model HTMLToPDF_WebApplication.Models.URL
+
+@{
+    ViewData["Title"] = "Syncfusion Blog to PDF converter";
+}
+
+@{Html.BeginForm("ExportToPDF", "Home", FormMethod.Post);
+    {
+        <h6>Enter the Blog URL</h6>
+        @Html.TextBoxFor(model => model.BlogLink, new { style = "margin-bottom: 20px;" })
+
+        <h6>Enter the Blog Title</h6>
+        @Html.TextBoxFor(model => model.HeaderText, new { style = "margin-bottom: 20px;" })
+
+        <h6>Enter the Blog Ad Image URL</h6>
+        @Html.TextBoxFor(model => model.ImageURL, new { style = "margin-bottom: 20px;" })
+
+        <h6>Enter the Download URL</h6>
+        @Html.TextBoxFor(model => model.AdURL, new { style = "margin-bottom: 20px;" })
+
+        <div>
+            <input type="submit" value="Convert HTML to PDF" style="width:200px;height:27px" />
+        </div>
+    }
+    Html.EndForm();
+}
+
