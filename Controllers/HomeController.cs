@@ -184,7 +184,7 @@ namespace HTMLToPDF_WebApplication.Controllers
             //Add the fields in composite fields.
             PdfCompositeField compositeField = new PdfCompositeField(font, brush, "Page {0} of {1}", pageNumber, count);
 
-            float x = (pdfPageSize.Height/2) - font.MeasureString("Page {99} of {99}").Width / 2;
+            float x = pdfPageSize.Height - (font.MeasureString("Page {99} of {99}").Width + 46);
             float y = 25 - (font.Height) / 2;
 
             //Draw the composite field in footer
@@ -196,8 +196,8 @@ namespace HTMLToPDF_WebApplication.Controllers
             PdfBitmap logo = new PdfBitmap(logoImage);
 
             //Draw the logo on the footer
-            footer.Graphics.DrawImage(logo, new RectangleF(20, 0, 75, 40));
-            footer.Graphics.DrawString("Copyright © 2001 - present Syncfusion, Inc. All Rights Reserved", font, brush, new PointF(20, 35));
+            footer.Graphics.DrawImage(logo, new RectangleF(46, 0, 75, 40));
+            footer.Graphics.DrawString("Copyright © 2001 - present Syncfusion, Inc. All Rights Reserved", font, brush, new PointF(46, 35));
             return footer;
         }
         public static Stream DownloadImage(string url)
