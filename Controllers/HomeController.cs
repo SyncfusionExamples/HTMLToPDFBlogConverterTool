@@ -157,10 +157,14 @@ namespace HTMLToPDF_WebApplication.Controllers
             PdfBrush brush = new PdfSolidBrush(color);
             if(headerText == string.Empty)
             {
-                headerText = "Syncfusion Blog";
+                headerText = "Syncfusion Blog";            
             }
+
+            float x = (pdfPageSize.Height/2) - (font.MeasureString(headerText).Width/2);
+            float y = 25 - (font.Height/2);
+
             //Draw the header string in header template element. 
-            header.Graphics.DrawString(headerText, font, brush, new PointF(200, 20));
+            header.Graphics.DrawString(headerText, font, brush, new PointF(x, y));
 
             return header;
         }
@@ -179,8 +183,21 @@ namespace HTMLToPDF_WebApplication.Controllers
             PdfBrush brush = new PdfSolidBrush(color);
             //Add the fields in composite fields.
             PdfCompositeField compositeField = new PdfCompositeField(font, brush, "Page {0} of {1}", pageNumber, count);
+
+            float x = (pdfPageSize.Height/2) - font.MeasureString("Page {99} of {99}").Width / 2;
+            float y = 25 - (font.Height) / 2;
+
             //Draw the composite field in footer
-            compositeField.Draw(footer.Graphics, new PointF(250, 20));
+            compositeField.Draw(footer.Graphics, new PointF(x, y));
+
+            FileStream logoImage = new FileStream("wwwroot/images/logo.png", FileMode.Open, FileAccess.Read);
+
+            //Draw the logo
+            PdfBitmap logo = new PdfBitmap(logoImage);
+
+            //Draw the logo on the footer
+            footer.Graphics.DrawImage(logo, new RectangleF(20, 0, 75, 40));
+            footer.Graphics.DrawString("Copyright © 2001 - present Syncfusion, Inc. All Rights Reserved", font, brush, new PointF(20, 35));
             return footer;
         }
         public static Stream DownloadImage(string url)
