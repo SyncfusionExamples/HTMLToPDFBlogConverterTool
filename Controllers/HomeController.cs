@@ -59,7 +59,7 @@ namespace HTMLToPDF_WebApplication.Controllers
 
             //Set the JavaScript to remove the unwanted elements from the HTML page.
             //Set the JavaScript to remove the unwanted elements from the HTML page.
-            blinkConverterSettings.JavaScript = "document.getElementById(\"liveChatApp\").remove();\ndocument.getElementById(\"wpfront-scroll-top\").remove();\n document.getElementById(\"top-section\").remove(); \n document.getElementById(\"main-menu-section\").remove(); \n document.getElementById(\"home-page-header\").remove();\n document.getElementById(\"social-icon\").remove(); \n document.getElementById(\"subscription-section\").remove();\n document.getElementById(\"toc-section\").remove();\n document.getElementById(\"category-ad-section\").remove();\n document.getElementById(\"comments-section\").remove();\n document.getElementById(\"cookie\").remove()";
+            blinkConverterSettings.JavaScript = "document.getElementById(\"liveChatApp\").remove();\ndocument.getElementById(\"wpfront-scroll-top\").remove();\n document.getElementById(\"top-section\").remove(); \n document.getElementById(\"main-menu-section\").remove(); \n document.getElementById(\"home-page-header\").remove();\n document.getElementById(\"social-icon\").remove(); \n document.getElementById(\"subscription-section\").remove();\n document.getElementById(\"toc-section\").remove();\n document.getElementById(\"category-ad-section\").remove();\n document.getElementById(\"comments-section\").remove();\n document.getElementById(\"main-footer-policy\").remove();\n document.getElementById(\"main-footer-desktop\").remove();\n document.getElementById(\"detail-page-secondary-header\").remove();\n document.getElementById(\"post-tags-section\").remove();\n document.getElementById(\"scroll-progress-bar-container\").remove();\n document.getElementById(\"cookie\").remove()";
 
             //Assign the header element to PdfHeader of Blink converter settings.
             blinkConverterSettings.PdfHeader = AddHeader(blinkConverterSettings.PdfPageSize, url.HeaderText);
@@ -197,7 +197,7 @@ namespace HTMLToPDF_WebApplication.Controllers
 
             //Draw the logo on the footer
             footer.Graphics.DrawImage(logo, new RectangleF(46, 0, 75, 40));
-            footer.Graphics.DrawString("Copyright © 2001 - present Syncfusion, Inc. All Rights Reserved", font, brush, new PointF(46, 35));
+            footer.Graphics.DrawString("Copyright 2001 - Present. Syncfusion, Inc. All Rights Reserved.", font, brush, new PointF(46, 35));
             return footer;
         }
         public static Stream DownloadImage(string url)
