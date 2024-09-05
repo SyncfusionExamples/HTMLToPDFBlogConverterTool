@@ -140,7 +140,7 @@ namespace HTMLToPDF_WebApplication.Controllers
 
                 // Define the position and size for the image
                 float x = 570;
-                float y = 330;
+                float y = 170;
                 float width = 235;
                 float height = 245;
 
