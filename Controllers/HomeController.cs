@@ -168,6 +168,17 @@ namespace HTMLToPDF_WebApplication.Controllers
                 // Add the hyperlink annotation to the page
                 page.Annotations.Add(hyperlink);
 
+
+                for (int i = 0; i < doc.Pages.Count; i++)
+                {
+                    PdfTextWebLink weblink = new PdfTextWebLink();
+                    weblink.Text = " View blog Link  >";
+                    weblink.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 10);
+                    weblink.Brush = PdfBrushes.Blue;
+                    weblink.Url = url.BlogLink;
+                    weblink.DrawTextWebLink(doc.Pages[i].Graphics, new PointF(740, 565));
+                }
+
                 //Creating the stream object
                 stream = new MemoryStream();
                 //Save the document as stream
@@ -175,7 +186,8 @@ namespace HTMLToPDF_WebApplication.Controllers
                 //Close the document
                 doc.Close(true);
                 return File(stream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "HTML-to-PDF.pdf");
-            } else
+            }
+            else
             {
                 return View();
             }
@@ -218,7 +230,7 @@ namespace HTMLToPDF_WebApplication.Controllers
             PdfCompositeField compositeField = new PdfCompositeField(font, brush, "Page {0} of {1}", pageNumber, count);
 
             float x = pdfPageSize.Height - (font.MeasureString("Page {99} of {99}").Width + 20);
-            float y = 35 - (font.Height) / 2;
+            float y = 25;
 
             //Draw the composite field in footer
             compositeField.Draw(footer.Graphics, new PointF(x, y));
@@ -231,7 +243,6 @@ namespace HTMLToPDF_WebApplication.Controllers
             //Draw the logo on the footer
             footer.Graphics.DrawImage(logo, new RectangleF(20, 0, 75, 40));
             footer.Graphics.DrawString("Copyright 2001 - Present. Syncfusion, Inc. All Rights Reserved.", font, brush, new PointF(20, 35));
-            footer.Graphics.DrawString(url, font, PdfBrushes.Blue, new PointF(20, 50));
             return footer;
         }
         public static Stream DownloadImage(string url)
