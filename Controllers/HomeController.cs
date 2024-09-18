@@ -68,18 +68,16 @@ namespace HTMLToPDF_WebApplication.Controllers
                 "detail-page-secondary-header",
                 "post-tags-section",
                 "cookie",
-                "liveChatApp",
                 "wpfront-scroll-top",
                 "top-section",
                 "main-menu-section",
-                "home-page-header",
-                "social-icon",
                 "subscription-section",
                 "toc-section",
                 "category-ad-section",
                 "comments-section",
                 "main-footer-policy",
                 "main-footer-desktop",
+                "boldchat-host"
             };
 
                 var scriptBuilder = new StringBuilder();
@@ -168,15 +166,18 @@ namespace HTMLToPDF_WebApplication.Controllers
                 // Add the hyperlink annotation to the page
                 page.Annotations.Add(hyperlink);
 
+                // Hex color code for hyperlink color
+                var color = ConvertHexToRGB("0057FF");
+                PdfBrush brush = new PdfSolidBrush(color);
 
                 for (int i = 0; i < doc.Pages.Count; i++)
                 {
                     PdfTextWebLink weblink = new PdfTextWebLink();
-                    weblink.Text = " View blog Link  >";
-                    weblink.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 10);
-                    weblink.Brush = PdfBrushes.Blue;
+                    weblink.Text = " View blog Link";
+                    weblink.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 8, PdfFontStyle.Bold);
+                    weblink.Brush = brush;
                     weblink.Url = url.BlogLink;
-                    weblink.DrawTextWebLink(doc.Pages[i].Graphics, new PointF(740, 565));
+                    weblink.DrawTextWebLink(doc.Pages[i].Graphics, new PointF(250, 570));
                 }
 
                 //Creating the stream object
@@ -198,15 +199,29 @@ namespace HTMLToPDF_WebApplication.Controllers
             PdfPageTemplateElement header = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, 30));
             //Create font and brush for header element.
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
-            var color = Color.FromArgb(179, 179, 179);
-            PdfBrush brush = new PdfSolidBrush(color);
-            if(headerText == string.Empty)
+            if (headerText == string.Empty)
             {
-                headerText = "Syncfusion Blog";            
+                headerText = "Syncfusion Blog";
             }
 
-            float x = (pdfPageSize.Height/2) - (font.MeasureString(headerText).Width/2);
-            float y = 15 - (font.Height/2);
+            float x = (pdfPageSize.Height / 2) - (font.MeasureString(headerText).Width / 2);
+            float y = 15 - (font.Height / 2);
+
+            // Hex color code for header background color
+            var color = ConvertHexToRGB("FFFFFF");
+            PdfBrush brush = new PdfSolidBrush(color);
+
+            header.Graphics.DrawRectangle(brush, new RectangleF(0, 0, pdfPageSize.Height, 30));
+
+            // Hex color code for header Background stoke color
+            color = ConvertHexToRGB("E5EDF3");
+            brush = new PdfSolidBrush(color);
+
+            header.Graphics.DrawLine(new PdfPen(color),new PointF(0,30),new PointF(pdfPageSize.Height,30));
+
+            //Hex color code for header text color
+            color = ConvertHexToRGB("475569");
+            brush = new PdfSolidBrush(color);
 
             //Draw the header string in header template element. 
             header.Graphics.DrawString(headerText, font, brush, new PointF(x, y));
@@ -217,20 +232,35 @@ namespace HTMLToPDF_WebApplication.Controllers
         private static PdfPageTemplateElement AddFooter(SizeF pdfPageSize, string url)
         {
             //Create PDF page template element for footer with bounds.
-            PdfPageTemplateElement footer = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, 70));
+            PdfPageTemplateElement footer = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, 60));
             //Create font and brush for header element.
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
             //Create page number field.
             PdfPageNumberField pageNumber = new PdfPageNumberField(font, PdfBrushes.Black);
             //Create page count field.
             PdfPageCountField count = new PdfPageCountField(font, PdfBrushes.Black);
-            var color = Color.FromArgb(179, 179, 179);
+
+            // Hex color code for footer CompositeField text color
+            var color = ConvertHexToRGB("475569");
             PdfBrush brush = new PdfSolidBrush(color);
             //Add the fields in composite fields.
             PdfCompositeField compositeField = new PdfCompositeField(font, brush, "Page {0} of {1}", pageNumber, count);
 
             float x = pdfPageSize.Height - (font.MeasureString("Page {99} of {99}").Width + 20);
-            float y = 25;
+            float y = 35;
+
+
+            // Hex color code for footer background color
+            color = ConvertHexToRGB("FAFBFF");
+            brush = new PdfSolidBrush(color);
+
+            footer.Graphics.DrawRectangle(brush, new RectangleF(0, 0, pdfPageSize.Height,60));
+
+            // Hex color code for footer background stoke color
+            color = ConvertHexToRGB("E5EDF3");
+            brush = new PdfSolidBrush(color);
+
+            footer.Graphics.DrawLine(new PdfPen(color), new PointF(0, 0), new PointF(pdfPageSize.Height, 0));
 
             //Draw the composite field in footer
             compositeField.Draw(footer.Graphics, new PointF(x, y));
@@ -239,21 +269,33 @@ namespace HTMLToPDF_WebApplication.Controllers
 
             //Draw the logo
             PdfBitmap logo = new PdfBitmap(logoImage);
-
             //Draw the logo on the footer
             footer.Graphics.DrawImage(logo, new RectangleF(20, 0, 75, 40));
-            footer.Graphics.DrawString("Copyright 2001 - Present. Syncfusion, Inc. All Rights Reserved.", font, brush, new PointF(20, 35));
+
+            //Hex color code for footer text color
+            color = ConvertHexToRGB("475569");
+            brush = new PdfSolidBrush(color);
+
+            footer.Graphics.DrawString("Copyright 2001 - Present. Syncfusion, Inc. All Rights Reserved. |", font, brush, new PointF(20, 35));
             return footer;
         }
         public static Stream DownloadImage(string url)
         {
             using (WebClient client = new())
             {
-				// Set the User-Agent header to mimic a request from a browser
-				client.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
+                // Set the User-Agent header to mimic a request from a browser
+                client.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36");
                 byte[] imageBytes = client.DownloadData(url);
                 return new MemoryStream(imageBytes);
             }
+        }
+        public static Color ConvertHexToRGB(string hexColor)
+        {
+            // Convert hex to integer values for red, green, and blue
+            int r = int.Parse(hexColor.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            int g = int.Parse(hexColor.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            int b = int.Parse(hexColor.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            return Color.FromArgb(r, g, b);
         }
     }
 }
