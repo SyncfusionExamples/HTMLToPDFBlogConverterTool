@@ -17,6 +17,8 @@ namespace HTMLToPDF_WebApplication.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private static float headerHeight = 30;
+        private static float footerHeight = 60;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -172,14 +174,53 @@ namespace HTMLToPDF_WebApplication.Controllers
 
                 for (int i = 0; i < doc.Pages.Count; i++)
                 {
-                    PdfTextWebLink weblink = new PdfTextWebLink();
-                    weblink.Text = " View blog Link";
-                    weblink.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 8, PdfFontStyle.Bold);
-                    weblink.Brush = brush;
-                    weblink.Url = url.BlogLink;
-                    weblink.DrawTextWebLink(doc.Pages[i].Graphics, new PointF(250, 570));
-                }
+                    bool isPageRemoved = false;
+                    if (i == doc.Pages.Count - 1)
+                    {
+                        // Get the first page of the loaded PDF document
+                        PdfPageBase lastPage = doc.Pages[i];
 
+                        TextLineCollection lineCollection = new TextLineCollection();
+
+                        // Extract text from the first page with bounds
+                        lastPage.ExtractText(out lineCollection);
+
+                        RectangleF textBounds = new RectangleF(0, headerHeight, blinkConverterSettings.PdfPageSize.Height, blinkConverterSettings.PdfPageSize.Width - headerHeight - footerHeight);
+                     
+                        string extractText = "";
+
+                        //Get the text provided in the bounds
+                        foreach (var txtLine in lineCollection.TextLine)
+                        {
+                            foreach (TextWord word in txtLine.WordCollection)
+                            {
+                                // Check if the word is within textBounds by comparing coordinates
+                                if (word.Bounds.Left >= textBounds.Left &&
+                                    word.Bounds.Right <= textBounds.Right &&
+                                    word.Bounds.Top >= textBounds.Top &&
+                                    word.Bounds.Bottom <= textBounds.Bottom)
+                                {
+                                    extractText += " " + word.Text;
+                                }
+                            }
+                        }
+                        if (string.IsNullOrEmpty(extractText))
+                        {
+                            doc.Pages.Remove(lastPage);
+                            isPageRemoved = true;
+                        }
+                    }
+                    if (!isPageRemoved)
+                    {
+                        PdfTextWebLink weblink = new PdfTextWebLink();
+                        weblink.Text = " View blog Link";
+                        weblink.Font = new PdfStandardFont(PdfFontFamily.Helvetica, 8, PdfFontStyle.Bold);
+                        weblink.Brush = brush;
+                        weblink.Url = url.BlogLink;
+                        weblink.DrawTextWebLink(doc.Pages[i].Graphics, new PointF(250, 570));
+                        isPageRemoved = false;
+                    }
+                }
                 //Creating the stream object
                 stream = new MemoryStream();
                 //Save the document as stream
@@ -196,7 +237,7 @@ namespace HTMLToPDF_WebApplication.Controllers
         private static PdfPageTemplateElement AddHeader(SizeF pdfPageSize, string headerText)
         {
             //Create PDF page template element for header with bounds.
-            PdfPageTemplateElement header = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, 30));
+            PdfPageTemplateElement header = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, headerHeight));
             //Create font and brush for header element.
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
             if (headerText == string.Empty)
@@ -232,7 +273,7 @@ namespace HTMLToPDF_WebApplication.Controllers
         private static PdfPageTemplateElement AddFooter(SizeF pdfPageSize, string url)
         {
             //Create PDF page template element for footer with bounds.
-            PdfPageTemplateElement footer = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, 60));
+            PdfPageTemplateElement footer = new PdfPageTemplateElement(new RectangleF(0, 0, pdfPageSize.Height, footerHeight));
             //Create font and brush for header element.
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 8);
             //Create page number field.

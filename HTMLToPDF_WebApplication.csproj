@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Net.Windows" Version="25.2.6" />
+    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Net.Windows" Version="27.1.52" />
   </ItemGroup>
 
 </Project>
