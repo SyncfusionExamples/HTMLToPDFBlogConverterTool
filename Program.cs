@@ -4,7 +4,8 @@ namespace HTMLToPDF_WebApplication
     {
         public static void Main(string[] args)
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("");
+            string licenseValidation = System.IO.File.ReadAllText(Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "License.txt")));
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseValidation);
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
