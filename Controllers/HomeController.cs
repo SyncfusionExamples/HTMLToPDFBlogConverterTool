@@ -97,6 +97,7 @@ namespace HTMLToPDF_WebApplication.Controllers
                 blinkConverterSettings.PdfFooter = AddFooter(blinkConverterSettings.PdfPageSize, url.BlogLink);
 
                 blinkConverterSettings.AdditionalDelay = 20000;
+                blinkConverterSettings.ConversionTimeout = 20000;
 
                 //Assign the Blink converter settings to HTML converter.
                 htmlConverter.ConverterSettings = blinkConverterSettings;
